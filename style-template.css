@@ -92,21 +92,14 @@ main ul li {
   line-height: 1.7;
 }
 
-footer {
-  text-align: center;
-  padding: 2rem 1rem;
-  font-size: 0.5rem;
-  color: #808080;
+footer, footer * {
+  color: #808080 !important;
+  font-weight: normal;
 }
 
 footer a {
   color: #808080;
   text-decoration: underline;
-}
-
-footer strong {
-  font-weight: normal; /* ou bold si tu veux garder ça */
-  color: inherit;
 }
 
 @media (max-width: 600px) {
