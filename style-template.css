@@ -52,6 +52,8 @@ nav a {
 nav a:hover,
 nav a.active {
   background-color: #fee58c;
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
 }
 
 main {
@@ -59,7 +61,7 @@ main {
   padding: 1rem 2rem;
   max-width: 1200px;       /* + large qu'avant */
   margin: 3rem auto;
-  padding: 2rem;
+  padding: 1rem;
   background-color: #fdfdf0;
   color: #050505;
 }
