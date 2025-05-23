@@ -92,7 +92,7 @@ main ul li {
   line-height: 1.7;
 }
 
-footer, footer * {
+footer {
   text-align: center;
   color: #808080 !important;
   font-weight: normal;
