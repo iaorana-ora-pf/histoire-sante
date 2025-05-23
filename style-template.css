@@ -94,12 +94,12 @@ main ul li {
 
 footer, footer * {
   text-align: center;
-  color: #808080 !important;
+  color: #606060 !important;
   font-weight: normal;
 }
 
 footer a {
-  color: #808080;
+  color: #606060;
   text-decoration: underline;
 }
 
