@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "content": "Campagne VIH 2015",
+    "start": "2015-01-01",
+    "end": "2016-01-01",
+    "group": "Promotion",
+    "description": "Campagne nationale de sensibilisation au VIH"
+  },
+  {
+    "id": 2,
+    "content": "Création de l'ILM",
+    "start": "1980-01-01",
+    "group": "Contexte",
+    "description": "Fondation de l'Institut Louis Malardé à Tahiti"
+  }
+]
