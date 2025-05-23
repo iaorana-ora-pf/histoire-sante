@@ -93,6 +93,7 @@ main ul li {
 }
 
 footer, footer * {
+  text-align: center;
   color: #808080 !important;
   font-weight: normal;
 }
