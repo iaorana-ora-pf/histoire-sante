@@ -75,22 +75,30 @@ h2 {
   font-weight: bold;
 }
 p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: normal;    
-  line-height: 1.8;
+  line-height: 1.7;
   margin-bottom: 1.5rem;
   color: #050505;
+}
+
+main ul li {
+  font-weight: normal;
+  color: #050505;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
 }
 
 footer {
   text-align: center;
   padding: 2rem 1rem;
   font-size: 0.9rem;
-  color: #291b25;
+  color: #303030;
 }
 
 footer a {
-  color: #291b25;
+  color: #303030;
   text-decoration: underline;
 }
 
