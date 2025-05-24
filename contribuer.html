@@ -1,15 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Template - Paana</title>
+  <title>Contribuer - Paana</title>
   <link rel="stylesheet" href="style-template.css" />
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+  <meta name="description" content="Frise chronologique santé publique - Paana">
 </head>
 <body>
-
   <header>
     <div class="logo">Paana</div>
     <nav>
@@ -19,14 +17,75 @@
     </nav>
   </header>
 
-  <main>
-    <h1>Page vide</h1>
-    <p>Ce template peut être dupliqué pour toutes les pages internes.</p>
-  </main>
+  <h2 style="padding-left: 2rem;">Comprendre pour mieux agir !</h2>
+
+  <div class="frise-container">
+    <div class="timeline-wrapper">
+      <div id="timeline"></div>
+    </div>
+    <div id="fiche-evenement">
+      <h3>Sélectionnez un événement</h3>
+      <p>Les détails s'afficheront ici.</p>
+    </div>
+  </div>
 
   <footer>
-    <p>2025 _ Emmanuelle RUPP-TERRIS _ <a href="mailto:frise.sante.pf@gmail.com">Contact</a></p>
+    <p>2025 - Emmanuelle RUPP-TERRIS - <a href="mailto:frise.sante.pf@gmail.com">Contact</a></p>
   </footer>
 
+  <script type="module">
+    import { Timeline, DataSet } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('evenements.json');
+      const raw = await response.json();
+
+      const data = raw.map(event => {
+        const className = "cat-" + event.group.toLowerCase()
+          .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+          .replace(/[()]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/-+$/, "");
+        return { ...event, className };
+      });
+
+      const timelineData = new DataSet(data);
+      const groups = new DataSet([...new Set(data.map(e => e.group))].map(cat => ({ id: cat, content: cat })));
+
+      const timeline = new Timeline(
+        document.getElementById('timeline'),
+        timelineData,
+        {
+          groupOrder: 'content',
+          orientation: 'top',
+          stack: true,
+          start: '1990-01-01',
+          end: '2035-01-01',
+          zoomMin: 1000 * 60 * 60 * 24 * 365,
+          zoomMax: 1000 * 60 * 60 * 24 * 365 * 200
+        }
+      );
+
+      timeline.setGroups(groups);
+
+      timeline.on('select', function (props) {
+        const id = props.items[0];
+        const item = timelineData.get(id);
+        if (!item) return;
+
+        document.getElementById('fiche-evenement').innerHTML = `
+          <h3>${item.content}</h3>
+          <p><strong>Année(s) :</strong> ${item.start.slice(0,4)}${item.end ? ' – ' + item.end.slice(0,4) : ''}</p>
+          <p><strong>Catégorie principale :</strong> ${item.group}</p>
+          <p><strong>Catégorie secondaire :</strong> ${item.categorieSecondaire || '-'}</p>
+          <p><strong>Thème :</strong> ${item.theme || '-'}</p>
+          <p><strong>Mots-clés :</strong> ${item.motsCles || '-'}</p>
+          <p><strong>Description :</strong> ${item.description || '-'}</p>
+          <p><strong>Source(s) :</strong> ${item.sources || '-'}</p>
+          <p><strong>Pour en savoir plus :</strong> ${item.lien ? `<a href="${item.lien}" target="_blank">Lien externe</a>` : '-'}</p>
+        `;
+      });
+    });
+  </script>
 </body>
 </html>
