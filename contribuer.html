@@ -14,13 +14,11 @@
       const response = await fetch('evenements.json');
       const data = await response.json();
 
-      // Ajoute automatiquement une classe CSS selon la catégorie
+// Génère automatiquement une classe CSS à partir de la catégorie principale
 const formattedData = data.map(event => {
   const className = "cat-" + event.group.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // accents
     .replace(/[()]/g, "")
-    .replace(/[’éà–œç]/g, m => ({
-      "’": "", "é": "e", "à": "a", "–": "-", "œ": "oe", "ç": "c"
-    }[m]))
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/-+$/, "");
   return { ...event, className };
