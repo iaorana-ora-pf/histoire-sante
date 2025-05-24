@@ -8,35 +8,34 @@
   <meta name="description" content="Paana - Base de connaissances sur la santé publique en Polynésie française">
 
   <!-- Vis.js Timeline -->
-  <script type="module">
-    import { Timeline } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
+ <script type="module">
+  import { Timeline, DataSet } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const response = await fetch('evenements.json');
-      const data = await response.json();
+  document.addEventListener('DOMContentLoaded', async () => {
+    const response = await fetch('evenements.json');
+    const data = await response.json();
 
-      const timelineData = new vis.DataSet(data);
+    const timelineData = new DataSet(data);
 
-      const timeline = new Timeline(document.getElementById('timeline'), timelineData, {
-        zoomMin: 1000 * 60 * 60 * 24 * 365,
-        zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
-        orientation: 'top',
-        stack: true
-      });
-
-      timeline.on('select', function (props) {
-        const id = props.items[0];
-        const item = timelineData.get(id);
-        document.getElementById('fiche-evenement').innerHTML = `
-          <h3>${item.content}</h3>
-          <p><strong>Année(s):</strong> ${item.start.slice(0, 4)} ${item.end ? '– ' + item.end.slice(0, 4) : ''}</p>
-          <p><strong>Catégorie:</strong> ${item.group || 'N/A'}</p>
-          <p><strong>Description:</strong> ${item.description || '–'}</p>
-        `;
-      });
+    const timeline = new Timeline(document.getElementById('timeline'), timelineData, {
+      zoomMin: 1000 * 60 * 60 * 24 * 365,
+      zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
+      orientation: 'top',
+      stack: true
     });
-  </script>
 
+    timeline.on('select', function (props) {
+      const id = props.items[0];
+      const item = timelineData.get(id);
+      document.getElementById('fiche-evenement').innerHTML = `
+        <h3>${item.content}</h3>
+        <p><strong>Année(s):</strong> ${item.start.slice(0, 4)} ${item.end ? '– ' + item.end.slice(0, 4) : ''}</p>
+        <p><strong>Catégorie:</strong> ${item.group || 'N/A'}</p>
+        <p><strong>Description:</strong> ${item.description || '–'}</p>
+      `;
+    });
+  });
+</script>
   <style>
     #timeline {
       width: 100%;
