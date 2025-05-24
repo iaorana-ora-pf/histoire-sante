@@ -1,36 +1,63 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contribuer - Paana</title>
-  <link rel="stylesheet" href="style-template.css" />
-  <meta name="description" content="Paana - Base de connaissances sur la santé publique en Polynésie française">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contribuer - Paana</title>
+<link href="style-template.css" rel="stylesheet"/>
+<meta content="Paana - Base de connaissances sur la santé publique en Polynésie française" name="description"/>
+</head></html><script type="module">
+import { Timeline, DataSet } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
 
-  <script type="module">
-    import { Timeline, DataSet } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
+document.addEventListener('DOMContentLoaded', async () => {
+  const response = await fetch('evenements.json');
+  const raw = await response.json();
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const response = await fetch('evenements.json');
-      const data = await response.json();
+  const data = raw.map(event => {
+    const className = "cat-" + event.group.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[()]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/-+$/, "");
+    return { ...event, className };
+  });
 
-      const formattedData = data.map(event => {
-        const className = "cat-" + event.group.toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          .replace(/[()]/g, "")
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/-+$/, "");
-        return { ...event, className };
-      });
+  const timelineData = new DataSet(data);
+  const groups = new DataSet([...new Set(data.map(e => e.group))].map(cat => ({ id: cat, content: cat })));
 
-      const timelineData = new DataSet(formattedData);
+  const timeline = new Timeline(
+    document.getElementById('timeline'),
+    timelineData,
+    {
+      groupOrder: 'content',
+      orientation: 'top',
+      stack: true,
+      start: '1990-01-01',
+      end: '2035-01-01',
+      zoomMin: 1000 * 60 * 60 * 24 * 365,
+      zoomMax: 1000 * 60 * 60 * 24 * 365 * 200
+    }
+  );
 
-      const uniqueCategories = [...new Set(formattedData.map(e => e.group))];
-      const groups = new DataSet(
-        uniqueCategories.map(cat => ({ id: cat, content: cat }))
-      );
+  timeline.setGroups(groups);
 
-      const timeline = new Timeline(
-        document.getElementById('timeline'),
-        timelineData,
-        {
+  timeline.on('select', function (props) {
+    const id = props.items[0];
+    const item = timelineData.get(id);
+    if (!item) return;
+
+    document.getElementById('fiche-evenement').innerHTML = `
+      <h3>${item.content}</h3>
+      <p><strong>Année(s) :</strong> ${item.start.slice(0,4)}${item.end ? ' – ' + item.end.slice(0,4) : ''}</p>
+      <p><strong>Catégorie principale :</strong> ${item.group}</p>
+      <p><strong>Catégorie secondaire :</strong> ${item.categorieSecondaire || '-'}</p>
+      <p><strong>Thème :</strong> ${item.theme || '-'}</p>
+      <p><strong>Mots-clés :</strong> ${item.motsCles || '-'}</p>
+      <p><strong>Description :</strong> ${item.description || '-'}</p>
+      <p><strong>Source(s) :</strong> ${item.sources || '-'}</p>
+      <p><strong>Pour en savoir plus :</strong> ${item.lien ? `<a href="${item.lien}" target="_blank">Lien externe</a>` : '-'}</p>
+    `;
+  });
+});
+</script>
