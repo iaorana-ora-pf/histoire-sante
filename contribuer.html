@@ -16,7 +16,7 @@
 
       const formattedData = data.map(event => {
         const className = "cat-" + event.group.toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .normalize("NFD").replace(/[̀-ͯ]/g, "")
           .replace(/[()]/g, "")
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/-+$/, "");
@@ -25,12 +25,24 @@
 
       const timelineData = new DataSet(formattedData);
 
-      const timeline = new Timeline(document.getElementById('timeline'), timelineData, {
-        zoomMin: 1000 * 60 * 60 * 24 * 365,
-        zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
-        orientation: 'top',
-        stack: true
-      });
+      const uniqueCategories = [...new Set(formattedData.map(e => e.group))];
+      const groups = new DataSet(
+        uniqueCategories.map(cat => ({ id: cat, content: cat }))
+      );
+
+      const timeline = new Timeline(
+        document.getElementById('timeline'),
+        timelineData,
+        {
+          zoomMin: 1000 * 60 * 60 * 24 * 365,
+          zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
+          orientation: 'top',
+          stack: true,
+          groupOrder: 'content'
+        }
+      );
+
+      timeline.setGroups(groups);
 
       timeline.on('select', function (props) {
         const id = props.items[0];
