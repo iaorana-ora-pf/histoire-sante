@@ -136,10 +136,7 @@ footer a {
   min-width: 300px;
 }
 
-/* Masquer les libellés de groupe (catégories) sur la frise */
-.vis-group .vis-label {
-  display: none !important;
-}
+
 
 /* === RESPONSIVE === */
 @media (max-width: 600px) {
