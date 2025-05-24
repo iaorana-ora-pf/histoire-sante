@@ -67,6 +67,7 @@
       timeline.setGroups(groups);
 
       timeline.on('select', function (props) {
+        console.log("Événement sélectionné :", props.items);
         const id = props.items[0];
         const item = timelineData.get(id);
         if (!item) return;
