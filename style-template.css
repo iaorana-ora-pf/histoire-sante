@@ -136,7 +136,16 @@ footer a {
   min-width: 300px;
 }
 
+/* Masquer uniquement les libellés visuels des groupes */
+.vis-labelset,
+.vis-group .vis-label {
+  display: none !important;
+}
 
+/* Ajuster la hauteur des lignes si souhaité */
+.vis-group {
+  height: 30px !important;
+}
 
 /* === RESPONSIVE === */
 @media (max-width: 600px) {
