@@ -1,3 +1,4 @@
+/* === BASE === */
 body {
   margin: 0;
   font-family: 'League Spartan', sans-serif;
@@ -8,13 +9,15 @@ body {
   min-height: 100vh;
 }
 
+/* === HEADER === */
 header {
-  background-color: #007b7f;;
-  padding: 1.5rem;
+  background-color: #007b7f;
+  padding: 1.5rem 2rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
+  color: #fdfdf0;
 }
 
 .logo {
@@ -27,7 +30,6 @@ header {
 .logo::after {
   content: "";
   display: block;
-  width: px;
   height: 12px;
   background-color: #fee58c;
   margin-top: 10px;
@@ -46,27 +48,27 @@ nav a {
   padding: 0.6rem 1.2rem;
   border-radius: 25px;
   font-weight: bold;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease-in-out;
 }
 
 nav a:hover,
 nav a.active {
   background-color: #fee58c;
   transform: scale(1.05);
-  transition: all 0.3s ease-in-out;
 }
 
+/* === MAIN CONTENT === */
 main {
   flex-grow: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem 2rem 2rem 2rem; /* top, right, bottom, left */
+  padding: 1.5rem 2rem 2rem 2rem;
   background-color: #fdfdf0;
   color: #050505;
 }
 
 main h2:first-of-type {
-  margin-top: 0.5rem; /* ou même 0 si tu veux coller */
+  margin-top: 0.5rem;
 }
 
 h1 {
@@ -83,24 +85,25 @@ h2 {
 
 p {
   font-size: 1rem;
-  font-weight: normal;    
   line-height: 1.7;
   margin-bottom: 1rem;
   color: #050505;
 }
 
 main ul li {
-  font-weight: normal;
-  color: #050505;
   font-size: 1rem;
-  margin-bottom: 0rem;
   line-height: 1.7;
+  margin-bottom: 0;
+  color: #050505;
 }
 
-footer, footer * {
+/* === FOOTER === */
+footer {
+  background-color: #eeeeee;
   text-align: center;
-  color: #606060 !important;
-  font-weight: normal;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #606060;
 }
 
 footer a {
@@ -108,6 +111,32 @@ footer a {
   text-decoration: underline;
 }
 
+/* === FRISE & FICHE === */
+.frise-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin: 2rem;
+  flex-wrap: wrap;
+}
+
+.timeline-wrapper {
+  flex: 2;
+  min-width: 600px;
+}
+
+#timeline {
+  width: 100%;
+  height: 500px;
+  border-bottom: 1px solid #ccc;
+}
+
+#fiche-evenement {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 600px) {
   header {
     flex-direction: column;
