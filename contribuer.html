@@ -63,14 +63,18 @@
           zoomMax: 1000 * 60 * 60 * 24 * 365 * 200
         }
       );
-
+      console.log("✅ Timeline initialisée avec", timelineData.length, "éléments.");
       timeline.setGroups(groups);
 
       timeline.on('select', function (props) {
         console.log("Événement sélectionné :", props.items);
         const id = props.items[0];
         const item = timelineData.get(id);
-        if (!item) return;
+       // AJOUTE ICI
+        console.log("🎯 Événement sélectionné :", id);
+        console.log("📦 Détail de l'item :", item);
+
+  if (!item) return; if (!item) return;
 
         document.getElementById('fiche-evenement').innerHTML = `
           <h3>${item.content}</h3>
