@@ -123,3 +123,10 @@
     "annee_fin": 1981,
     "categorie_principale": "Qualité et équité des services de santé",
     "categorie_secondaire": "Accès aux produits et technologies de santé",
+    "theme": "Accès universel",
+    "mots_cles": ["accès", "équité", "technologie"],
+    "description": "Mise en œuvre de systèmes pour garantir un accès équitable aux soins.",
+    "sources": ["https://laporte.fr/"],
+    "en_savoir_plus": "https://www.lamy.fr/"
+}
+]
