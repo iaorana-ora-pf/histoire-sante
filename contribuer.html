@@ -3,10 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A propos - Paana</title>
+  <title>Contribuer - Paana</title>
   <link rel="stylesheet" href="style-template.css" />
   <meta name="description" content="Paana - Base de connaissances sur la santé publique en Polynésie française">
- </head>
+  <script src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+  <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+  <style>
+    #frise-container { display: flex; border-top: 1px solid #ccc; margin-top: 1rem; height: 600px; }
+    #timeline { flex: 2; border-right: 1px solid #ccc; }
+    #details { flex: 1; padding: 1rem; overflow-y: auto; }
+    .event-title { font-weight: bold; margin-top: 10px; }
+    .active { font-weight: bold; color: #c00; }
+  </style>
+</head>
 <body>
 
   <header>
@@ -17,10 +26,77 @@
       <a href="https://forms.gle/PR8ZHvSXxLNYETtx9" class="btn" target="_blank">SOUMETTRE</a>
     </nav>
   </header>
- 
+
+  <main>
+    <h1>Frise Chronologique de la Santé Publique</h1>
+    <section id="frise-container">
+      <div id="timeline"></div>
+      <div id="details"><em>👈 Cliquez un événement pour voir les détails ici</em></div>
+    </section>
+  </main>
+
   <footer>
     <p>2025 - Emmanuelle RUPP-TERRIS - <a href="mailto:frise.sante.pf@gmail.com">Contact</a></p>
   </footer>
 
+  <script>
+  fetch('evenements.json')
+    .then(response => response.json())
+    .then(events => {
+      const items = new vis.DataSet(events.map(ev => ({
+        id: ev.id,
+        content: ev.titre,
+        start: ev.annee_debut + '-01-01',
+        end: ev.annee_fin !== ev.annee_debut ? ev.annee_fin + '-01-01' : null,
+        group: ev.categorie_principale,
+        className: ev.theme.replace(/\\s+/g, '-').toLowerCase()
+      })));
 
+      const groups = new vis.DataSet([...new Set(events.map(ev => ev.categorie_principale))].map(cat => ({
+        id: cat,
+        content: cat
+      })));
+
+      const container = document.getElementById('timeline');
+      const timeline = new vis.Timeline(container, items, groups, {
+        zoomMin: 1000 * 60 * 60 * 24 * 365 * 1,
+        zoomMax: 1000 * 60 * 60 * 24 * 365 * 50,
+        start: '1700-01-01',
+        end: '2030-01-01'
+      });
+
+      const details = document.getElementById('details');
+
+      timeline.on("select", function (props) {
+        const ev = events.find(e => e.id === props.items[0]);
+        if (ev) {
+          const sameThemeEvents = events.filter(e => e.theme === ev.theme);
+          const currentIndex = sameThemeEvents.findIndex(e => e.id === ev.id);
+          const prev = sameThemeEvents[currentIndex - 1];
+          const next = sameThemeEvents[currentIndex + 1];
+          details.innerHTML = `
+            <div class="event-title">${ev.titre}</div>
+            <div><strong>Année(s):</strong> ${ev.annee_debut} - ${ev.annee_fin}</div>
+            <div><strong>Catégorie principale:</strong> ${ev.categorie_principale}</div>
+            <div><strong>Catégorie secondaire:</strong> ${ev.categorie_secondaire}</div>
+            <div><strong>Thème:</strong> ${ev.theme}</div>
+            <div><strong>Mots-clés:</strong> ${ev.mots_cles.join(", ")}</div>
+            <div><strong>Description:</strong><br>${ev.description}</div>
+            <div><strong>Sources:</strong> <a href="${ev.sources[0]}" target="_blank">${ev.sources[0]}</a></div>
+            <div><strong>Pour aller plus loin:</strong> <a href="${ev.en_savoir_plus}" target="_blank">${ev.en_savoir_plus}</a></div>
+            <hr>
+            <div><strong>Autres événements du même thème :</strong><br>${
+              sameThemeEvents.map(e => `<div class="${e.id === ev.id ? 'active' : ''}">${e.titre}</div>`).join('')
+            }</div>
+            <div style="margin-top:10px;">
+              ${prev ? `<button onclick="timeline.setSelection(${prev.id})">⬅️ Précédent</button>` : ""}
+              ${next ? `<button onclick="timeline.setSelection(${next.id})">Suivant ➡️</button>` : ""}
+            </div>
+          `;
+        }
+      });
+    });
+  </script>
+
+</body>
 </html>
