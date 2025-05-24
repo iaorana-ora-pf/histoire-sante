@@ -2,21 +2,102 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Fiche Événement Interactive</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contribuer - Paana</title>
+  <link rel="stylesheet" href="style-template.css" />
+  <meta name="description" content="Paana - Base de connaissances sur la santé publique en Polynésie française">
+  <script type="module">
+    import { Timeline, DataSet } from 'https://cdn.jsdelivr.net/npm/vis-timeline@latest/standalone/esm/vis-timeline-graph2d.min.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('evenements.json');
+      const data = await response.json();
+
+      const timelineData = new DataSet(data);
+
+      const timeline = new Timeline(
+        document.getElementById('timeline'),
+        timelineData,
+        {
+          zoomMin: 1000 * 60 * 60 * 24 * 365,
+          zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
+          orientation: 'top',
+          stack: true,
+          start: '1990-01-01',
+          end: '2030-01-01'
+        }
+      );
+
+      timeline.on('select', function (props) {
+        const id = props.items[0];
+        const item = timelineData.get(id);
+        if (!item) return;
+
+        document.getElementById('fiche-evenement').innerHTML = `
+          <h3>${item.content}</h3>
+          <p><strong>Année(s) :</strong> ${item.start.slice(0,4)}${item.end ? ' – ' + item.end.slice(0,4) : ''}</p>
+          <p><strong>Catégorie principale :</strong> ${item.group}</p>
+          <p><strong>Catégorie secondaire :</strong> ${item.categorieSecondaire || '-'}</p>
+          <p><strong>Thème :</strong> ${item.theme || '-'}</p>
+          <p><strong>Mots-clés :</strong> ${item.motsCles || '-'}</p>
+          <p><strong>Description :</strong> ${item.description || '-'}</p>
+          <p><strong>Source(s) :</strong> ${item.sources || '-'}</p>
+          <p><strong>Pour en savoir plus :</strong> ${item.lien ? `<a href="${item.lien}" target="_blank">Lien externe</a>` : '-'}</p>
+        `;
+      });
+    });
+  </script>
+  <style>
+    #timeline {
+      width: 100%;
+      height: 500px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .frise-container {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    #fiche-evenement {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .timeline-wrapper {
+      flex: 2;
+      min-width: 600px;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <div class="logo">Paana</div>
+    <nav>
+      <a href="a-propos.html">A PROPOS</a>
+      <a href="contribuer.html">CONTRIBUER</a>
+      <a href="https://forms.gle/PR8ZHvSXxLNYETtx9" class="btn" target="_blank">SOUMETTRE</a>
+    </nav>
+  </header>
 
-  <div id="event-details"></div>
+  <main>
+    <h2>Comprendre pour mieux agir !</h2>
+    <div class="frise-container">
+      <div class="timeline-wrapper">
+        <div id="timeline"></div>
+      </div>
+      <div id="fiche-evenement">
+        <h3>Sélectionnez un événement</h3>
+        <p>Les détails s'afficheront ici.</p>
+      </div>
+    </div>
+  </main>
 
-  <h3>Événements liés par thème :</h3>
-  <ul id="related-events"></ul>
-
-  <div class="nav-buttons">
-    <button id="prev-event">⬅️ Précédent</button>
-    <button id="next-event">Suivant ➡️</button>
-  </div>
-
-  <script src="script.js"></script>
+  <footer>
+    <p>2025 - Emmanuelle RUPP-TERRIS - <a href="mailto:frise.sante.pf@gmail.com">Contact</a></p>
+  </footer>
 </body>
 </html>
