@@ -98,7 +98,7 @@ main ul li {
 }
 
 /* === FOOTER === */
-footer {
+footer, footer * {
   background-color: #eeeeee;
   text-align: center;
   padding: 1rem;
