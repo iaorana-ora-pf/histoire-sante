@@ -14,8 +14,19 @@
       const response = await fetch('evenements.json');
       const data = await response.json();
 
-      const timelineData = new DataSet(data);
+      // Ajoute automatiquement une classe CSS selon la catégorie
+const formattedData = data.map(event => {
+  const className = "cat-" + event.group.toLowerCase()
+    .replace(/[()]/g, "")
+    .replace(/[’éà–œç]/g, m => ({
+      "’": "", "é": "e", "à": "a", "–": "-", "œ": "oe", "ç": "c"
+    }[m]))
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+$/, "");
+  return { ...event, className };
+});
 
+const timelineData = new DataSet(formattedData);
       const timeline = new Timeline(document.getElementById('timeline'), timelineData, {
         zoomMin: 1000 * 60 * 60 * 24 * 365,
         zoomMax: 1000 * 60 * 60 * 24 * 365 * 200,
